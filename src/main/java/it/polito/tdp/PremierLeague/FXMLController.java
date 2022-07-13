@@ -5,9 +5,11 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Sconfitto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -44,6 +46,25 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	this.txtResult.clear();
+    	String goals = this.txtGoals.getText();
+    	double soglia;
+    	
+    	try {
+    		soglia = Double.parseDouble(goals);
+    	}catch(NumberFormatException e) {
+    		this.txtResult.appendText("Inserire un valore numerico\n");
+    		return;
+    	}
+    	
+    	model.creaGrafo(soglia);
+    	this.txtResult.appendText("GRAFO CREATO\n");
+    	this.txtResult.appendText("#VERTICI: "+this.model.nVertici()+"\n");
+    	this.txtResult.appendText("#ARCHI: "+this.model.nArchi()+"\n");
+    	
+    	this.btnTopPlayer.setDisable(false);
+    	this.btnDreamTeam.setDisable(false);
+    	this.txtK.setDisable(false);
 
     }
 
@@ -54,6 +75,14 @@ public class FXMLController {
 
     @FXML
     void doTopPlayer(ActionEvent event) {
+    	this.txtResult.clear();
+    	
+    	this.txtResult.appendText("TOP PLAYER: "+model.getTopPlayer().toString()+"\n");
+    	List<Sconfitto> battuti = model.getSconfitti();
+    	this.txtResult.setText("AVVERSARI BATTUTI: \n");
+    	for(Sconfitto si: battuti) {
+    		this.txtResult.appendText(si.toString()+"\n");
+    	}
 
     }
 
@@ -70,5 +99,9 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	this.btnTopPlayer.setDisable(true);
+    	this.btnDreamTeam.setDisable(true);
+    	this.txtK.setDisable(true);
     }
 }
